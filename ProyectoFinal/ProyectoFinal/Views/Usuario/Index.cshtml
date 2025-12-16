@@ -1,0 +1,33 @@
+﻿@{
+    ViewBag.Title = "Dashboard Usuario";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card" style="background: #091C47; color: white; border-left: none;">
+    <h1 style="margin-bottom: 0.5rem; font-size: 2rem;">Bienvenido, @ViewBag.Nombre</h1>
+    <p style="font-size: 1.1rem; opacity: 0.95;">Gestiona tus citas médicas de forma rápida y sencilla</p>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; ">
+    <div class="card"  style="text-align: center; border-left: none; transition: transform 0.3s; cursor: pointer;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+        <div style="font-size: 4rem; margin-bottom: 1rem; background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); width: 100px; height: 100px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">📅</div>
+        <h3 style="margin-bottom: 1rem; color: #091C47; font-size: 1.4rem;">Reservar Cita</h3>
+        <p style="color: #546e7a; margin-bottom: 2rem; line-height: 1.6;">Agenda una nueva cita médica de forma rápida y sencilla</p>
+        <a href="@Url.Action("ReservarCita", "Usuario")" class="btn btn-primary" style="display: inline-block;">
+            Reservar Ahora
+        </a>
+    </div>
+
+    <div class="card" style="text-align: center;border-left: none; transition: transform 0.3s; cursor: pointer;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+        <div style="font-size: 4rem; margin-bottom: 1rem; background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%); width: 100px; height: 100px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">📋</div>
+        <h3 style="margin-bottom: 1rem; color: #091C47; font-size: 1.4rem;">Mis Citas</h3>
+        <p style="color: #546e7a; margin-bottom: 2rem; line-height: 1.6;">Consulta y gestiona tus citas programadas</p>
+        <a href="@Url.Action("MisCitas", "Usuario")" class="btn btn-success" style="display: inline-block;">
+            Ver Mis Citas
+        </a>
+    </div>
+</div>
+
+
+
+

@@ -1,0 +1,75 @@
+﻿@model List<ProyectoFinal.Models.ServicioMedico>
+@{
+    ViewBag.Title = "Gestionar Horarios";
+    var servicios = ViewBag.Servicios as List<ProyectoFinal.Models.ServicioMedico>;
+}
+
+<div class="card" style="background: #091C47; color: white; border-left: none;">
+    <h1 style="margin-bottom: 0.5rem; font-size: 2rem; display: flex; align-items: center; gap: 0.5rem;">
+         Gestión de Horarios
+    </h1>
+    <p style="font-size: 1.1rem; opacity: 0.95;">Administra los horarios disponibles para cada servicio</p>
+</div>
+
+@if (TempData["Mensaje"] != null)
+{
+    <div class="alert alert-success">
+         @TempData["Mensaje"]
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-error">
+         @TempData["Error"]
+    </div>
+}
+
+<div class="card" style="background: lightgray; border-left: none;">
+    <h3 style="margin-bottom: 1.5rem; color: #091C47; display: flex; align-items: center; gap: 0.5rem; font-size: 1.4rem;">
+         Agregar Nuevo Horario
+    </h3>
+
+    <form method="post" action="@Url.Action("AgregarHorario", "Admin")">
+        <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 1rem; align-items: end;">
+            <div class="form-group" style="margin-bottom: 0;">
+                <label for="servicioID"> Servicio Médico</label>
+                <select id="servicioID" name="servicioID" required>
+                    <option value="">-- Seleccione un servicio --</option>
+                    @if (servicios != null)
+                    {
+                        foreach (var servicio in servicios)
+                        {
+                            <option value="@servicio.ServicioID">@servicio.NombreServicio</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 0;">
+                <label for="fechaHora"> Fecha y Hora</label>
+                <input type="datetime-local" id="fechaHora" name="fechaHora" required />
+            </div>
+
+            <button type="submit" class="btn" style="background: #091C47; color: white; box-shadow: 0 2px 4px rgba(245, 124, 0, 0.3); white-space: nowrap;">
+                Agregar
+            </button>
+        </div>
+    </form>
+</div>
+
+<div style="margin-top: 1rem;">
+    <a href="@Url.Action("Index", "Admin")" class="btn" style="background: lightgray; color: #091C47; box-shadow: 0 2px 4px rgba(120, 144, 156, 0.3);">
+        Regresar
+    </a>
+</div>
+
+@section scripts {
+    <script>
+        // Establecer fecha mínima como hoy
+        var fechaInput = document.getElementById('fechaHora');
+        var now = new Date();
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+        fechaInput.min = now.toISOString().slice(0, 16);
+    </script>
+}

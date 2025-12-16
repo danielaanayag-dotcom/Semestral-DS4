@@ -1,0 +1,155 @@
+﻿@model List<ProyectoFinal.Models.Cita>
+@{
+    ViewBag.Title = "Ver Citas";
+}
+
+<div class="card" style="background: #091C47; color: white; border-left: none; ">
+    <h1 style="margin-bottom: 0.5rem; font-size: 2rem; display: flex; align-items: center; gap: 0.5rem;">
+        Todas las Citas
+    </h1>
+    <p style="font-size: 1.1rem; opacity: 0.95;">Lista completa de citas programadas en el sistema</p>
+</div>
+
+@if (TempData["Mensaje"] != null)
+{
+    <div class="alert alert-success" style="background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%); color: #1b5e20; padding: 1rem 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; border-left: 4px solid #2e7d32; box-shadow: 0 2px 4px rgba(46, 125, 50, 0.2);">
+        @TempData["Mensaje"]
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-error" style="background: linear-gradient(135deg, #ffcdd2 0%, #ef9a9a 100%); color: #b71c1c; padding: 1rem 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; border-left: 4px solid #c62828; box-shadow: 0 2px 4px rgba(198, 40, 40, 0.2);">
+        @TempData["Error"]
+    </div>
+}
+
+<div class="card">
+    @if (Model.Count == 0)
+    {
+        <div style="text-align: center; padding: 4rem;">
+            <div style="font-size: 6rem; margin-bottom: 1.5rem; opacity: 0.7;">📭</div>
+            <h3 style="color: #01579b; margin-bottom: 1rem; font-size: 1.5rem;">No hay citas registradas</h3>
+            <p style="color: #546e7a; font-size: 1.1rem;">Las citas aparecerán aquí cuando los pacientes las reserven</p>
+        </div>
+    }
+    else
+    {
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; padding: 1.5rem; background: lightgray; border-radius: 10px; border-left: none;">
+            <div>
+                <h3 style="color: #091C47; margin: 0; font-size: 1.3rem;">
+                    <strong>Total de citas: @Model.Count</strong>
+                </h3>
+            </div>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <span style="background: #EBF743; color: #f57f17; padding: 0.5rem 1rem; border-radius: 5px; font-size: 0.9rem; font-weight: 600;">
+                    Pendientes: @Model.Count(c => c.Estado == "Pendiente")
+                </span>
+                <span style="background: #73F075; color: #1b5e20; padding: 0.5rem 1rem; border-radius: 5px; font-size: 0.9rem; font-weight: 600;">
+                    Confirmadas: @Model.Count(c => c.Estado == "Confirmada")
+                </span>
+                <span style="background: #F07373; color: #b71c1c; padding: 0.5rem 1rem; border-radius: 5px; font-size: 0.9rem; font-weight: 600;">
+                    Canceladas: @Model.Count(c => c.Estado == "Cancelada")
+                </span>
+            </div>
+        </div>
+
+        <div style="overflow-x: auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="white-space: nowrap;">ID</th>
+                        <th style="white-space: nowrap;">Paciente</th>
+                        <th style="white-space: nowrap;">Email</th>
+                        <th style="white-space: nowrap;">Teléfono</th>
+                        <th style="white-space: nowrap;">Servicio</th>
+                        <th style="white-space: nowrap;">Fecha Cita</th>
+                        <th style="white-space: nowrap;">Estado</th>
+                        <th style="white-space: nowrap;">Fecha Creación</th>
+                        <th style="white-space: nowrap;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var cita in Model)
+                    {
+                        <tr>
+                            <td style="font-weight: 600; color: #091C47;">#@cita.CitaID</td>
+                            <td><strong style="color: #091C47;">@cita.NombrePaciente</strong></td>
+                            <td style="color: #091C47;">@cita.Email</td>
+                            <td style="color: #091C47;">@cita.Telefono</td>
+                            <td><strong style="color: #091C47;">@cita.NombreServicio</strong></td>
+                            <td style="white-space: nowrap; font-weight: 600; color: darkred;">
+                                @cita.FechaCita.ToString("dd/MM/yyyy HH:mm")
+                            </td>
+                            <td>
+                                @if (cita.Estado == "Pendiente")
+                                {
+                                    <span style="background: #EBF743; color: #f57f17; padding: 0.4rem 1rem; border-radius: 5px; font-size: 0.85rem; font-weight: 600; display: inline-block; box-shadow: 0 2px 4px rgba(245, 127, 23, 0.2);">
+                                        Pendiente
+                                    </span>
+                                }
+                                else if (cita.Estado == "Confirmada")
+                                {
+                                    <span style="background: #73F075; color: #1b5e20; padding: 0.4rem 1rem; border-radius: 5px; font-size: 0.85rem; font-weight: 600; display: inline-block; box-shadow: 0 2px 4px rgba(56, 142, 60, 0.2);">
+                                        Confirmada
+                                    </span>
+                                }
+                                else if (cita.Estado == "Cancelada")
+                                {
+                                    <span style="background: #F07373; color: #b71c1c; padding: 0.4rem 1rem; border-radius: 5px; font-size: 0.85rem; font-weight: 600; display: inline-block; box-shadow: 0 2px 4px rgba(211, 47, 47, 0.2);">
+                                        Cancelada
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span style="background: linear-gradient(135deg, #bbdefb 0%, #90caf9 100%); color: #01579b; padding: 0.4rem 1rem; border-radius: 5px; font-size: 0.85rem; font-weight: 600; display: inline-block; box-shadow: 0 2px 4px rgba(2, 119, 189, 0.2);">
+                                        Completada
+                                    </span>
+                                }
+                            </td>
+                            <td style="white-space: nowrap; color: #546e7a;">
+                                @cita.FechaCreacion.ToString("dd/MM/yyyy HH:mm")
+                            </td>
+                            <td style="white-space: nowrap;">
+                                @if (cita.Estado == "Pendiente")
+                                {
+                                    <form method="post" action="@Url.Action("ConfirmarCita", "Admin")" style="display:inline;" onsubmit="return confirm('✅ ¿Confirmar esta cita?');">
+                                        <input type="hidden" name="citaID" value="@cita.CitaID" />
+                                        <button type="submit" class="btn btn-success" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; margin-right: 0.3rem;">
+                                            Confirmar
+                                        </button>
+                                    </form>
+                                    <form method="post" action="@Url.Action("CancelarCitaAdmin", "Admin")" style="display:inline;" onsubmit="return confirm('❌ ¿Cancelar esta cita?');">
+                                        <input type="hidden" name="citaID" value="@cita.CitaID" />
+                                        <button type="submit" class="btn btn-danger" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">
+                                            Cancelar
+                                        </button>
+                                    </form>
+                                }
+                                else if (cita.Estado == "Confirmada")
+                                {
+                                    <form method="post" action="@Url.Action("CancelarCitaAdmin", "Admin")" style="display:inline;" onsubmit="return confirm('❌ ¿Cancelar esta cita?');">
+                                        <input type="hidden" name="citaID" value="@cita.CitaID" />
+                                        <button type="submit" class="btn btn-danger" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">
+                                            Cancelar
+                                        </button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <span style="color: #90a4ae; font-size: 0.85rem;">-</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+<div style="margin-top: 1rem; display: flex; gap: 1rem;">
+    <a href="@Url.Action("Index", "Admin")" class="btn" style="background: lightgray; color: #091C47;">
+        Regresar
+    </a>
+</div>

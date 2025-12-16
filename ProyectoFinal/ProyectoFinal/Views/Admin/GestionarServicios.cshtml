@@ -1,0 +1,110 @@
+﻿@model List<ProyectoFinal.Models.ServicioMedico>
+@{
+    ViewBag.Title = "Gestionar Servicios";
+}
+
+<div class="card" style="background: #091C47; color: white; border-left: none;">
+    <h1 style="margin-bottom: 0.5rem; font-size: 2rem; display: flex; align-items: center; gap: 0.5rem;">
+        🏥 Gestión de Servicios Médicos
+    </h1>
+    <p style="font-size: 1.1rem; opacity: 0.95;">Administra los servicios disponibles para los pacientes</p>
+</div>
+
+@if (TempData["Mensaje"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Mensaje"]
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-error">
+         @TempData["Error"]
+    </div>
+}
+
+<div class="card" style="background: lightgray; border-left: none;">
+    <h3 style="margin-bottom: 1.5rem; color: #091C47; display: flex; align-items: center; gap: 0.5rem; font-size: 1.4rem;">
+         Agregar Nuevo Servicio
+    </h3>
+
+    <form method="post" action="@Url.Action("AgregarServicio", "Admin")">
+        <div style="display: grid; grid-template-columns: 2fr 2fr 1fr auto; gap: 1rem; align-items: end;">
+            <div class="form-group" style="margin-bottom: 0;">
+                <label for="nombreServicio"> Nombre del Servicio</label>
+                <input type="text" id="nombreServicio" name="nombreServicio" required placeholder="Ej: Consulta General" />
+            </div>
+
+            <div class="form-group" style="margin-bottom: 0;">
+                <label for="descripcion"> Descripción</label>
+                <input type="text" id="descripcion" name="descripcion" required placeholder="Descripción breve del servicio" />
+            </div>
+
+            <div class="form-group" style="margin-bottom: 0;">
+                <label for="duracion"> Duración (min)</label>
+                <input type="number" id="duracion" name="duracion" required min="15" max="120" placeholder="30" />
+            </div>
+
+            <button type="submit" class="btn btn-success" style="white-space: nowrap;">
+                Agregar
+            </button>
+        </div>
+    </form>
+</div>
+
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h3 style="color: #091C47; margin: 0; display: flex; align-items: center; gap: 0.5rem; font-size: 1.4rem;">
+             Servicios Disponibles
+        </h3>
+        <span style="background: lightgray; color: #091C47; padding: 0.5rem 1.5rem; border-radius: 5px; font-weight: 600; font-size: 0.95rem;">
+            Total: @Model.Count servicios
+        </span>
+    </div>
+
+    @if (Model.Count == 0)
+    {
+        <div style="text-align: center; padding: 4rem;">
+            <div style="font-size: 5rem; margin-bottom: 1rem; opacity: 0.7;">🏥</div>
+            <p style="color: #091C47; font-size: 1.1rem;">No hay servicios registrados</p>
+            <p style="color: #90a4ae; margin-top: 0.5rem;">Agrega el primer servicio usando el formulario de arriba</p>
+        </div>
+    }
+    else
+    {
+        <div style="overflow-x: auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="white-space: nowrap;">ID</th>
+                        <th style="white-space: nowrap;">Nombre</th>
+                        <th>Descripción</th>
+                        <th style="white-space: nowrap;">Duración</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var servicio in Model)
+                    {
+                        <tr>
+                            <td style="font-weight: 600; color: #091C47;">#@servicio.ServicioID</td>
+                            <td><strong style="color: #091C47;">@servicio.NombreServicio</strong></td>
+                            <td style="color: #546e7a;">@servicio.Descripcion</td>
+                            <td style="white-space: nowrap;">
+                                <span style="background: lightgreen; color: darkgreen; padding: 0.4rem 1rem; border-radius: 5px; font-size: 0.85rem; font-weight: 600; display: inline-block;">
+                                     @servicio.Duracion minutos
+                                </span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+<div style="margin-top: 1rem;">
+    <a href="@Url.Action("Index", "Admin")" class="btn" style="background: lightgray; color: #091C47; box-shadow: 0 2px 4px rgba(120, 144, 156, 0.3);">
+        Regresar
+    </a>
+</div>

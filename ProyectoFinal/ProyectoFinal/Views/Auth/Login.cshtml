@@ -1,0 +1,226 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Login - Sistema de Citas Médicas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #091C47;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            width: 100%;
+            max-width: 450px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .login-header .logo {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+
+        @@keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .login-header h1 {
+            color: #091C47;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .login-header p {
+            color: #546e7a;
+            font-size: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+            .form-group label {
+                display: block;
+                margin-bottom: 0.5rem;
+                color: #091C47;
+                font-weight: 600;
+                font-size: 0.95rem;
+            }
+
+            .form-group input {
+                width: 100%;
+                padding: 0.9rem 1rem;
+                border: 2px solid #091C47;
+                border-radius: 10px;
+                font-size: 1rem;
+                background-color: #f5f5f5;
+            }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #0277bd;
+            background-color: white;
+        }
+
+        .form-group input::placeholder {
+            color: #b0bec5;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 1.1rem;
+            background: #091C47;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        .alert-error {
+            background: #ffcdd2;
+            color: #b71c1c;
+            padding: 1rem 1.2rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .demo-credentials {
+            margin-top: 2rem;
+            padding: 1.2rem;
+            background:#bbdefb;
+            border-radius: 10px;
+        }
+
+        .demo-credentials h4 {
+            margin-bottom: 0.8rem;
+            color: #01579b;
+            font-size: 1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .demo-credentials h4::before {
+            content: '🔑';
+        }
+
+        .demo-credentials p {
+            margin: 0.4rem 0;
+            color: #37474f;
+            font-size: 0.9rem;
+            padding-left: 0.5rem;
+        }
+
+        .demo-credentials strong {
+            color: #01579b;
+            font-weight: 600;
+        }
+
+        /* Separador */
+        .divider {
+            text-align: center;
+            margin: 1.5rem 0;
+            color: #90a4ae;
+            font-size: 0.85rem;
+            position: relative;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 40%;
+            height: 1px;
+            background: #cfd8dc;
+        }
+
+        .divider::before {
+            left: 0;
+        }
+
+        .divider::after {
+            right: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <div class="logo">🏥</div>
+            <h1>Sistema de Citas Médicas</h1>
+            <p>Accede a tu cuenta para continuar</p>
+        </div>
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert-error">
+                @ViewBag.Error
+            </div>
+        }
+
+        <form method="post" action="@Url.Action("Login", "Auth")">
+            <div class="form-group">
+                <label for="email">Correo Electrónico</label>
+                <input type="email" id="email" name="email" required placeholder="ejemplo@correo.com" />
+            </div>
+
+            <div class="form-group">
+                <label for="contrasena">Contraseña</label>
+                <input type="password" id="contrasena" name="contrasena" required placeholder="Ingresa tu contraseña" />
+            </div>
+
+            <button type="submit" class="btn-login">Iniciar Sesión</button>
+        </form>
+
+    </div>
+</body>
+</html>

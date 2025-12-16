@@ -1,0 +1,148 @@
+﻿@model List<ProyectoFinal.Models.ServicioMedico>
+
+@{
+    ViewBag.Title = "Reservar Cita";
+}
+
+<div class="card" style="background: #091C47; color: white; border-left: none;">
+    <h1 style="margin-bottom: 0.5rem; font-size: 2rem; display: flex; align-items: center; gap: 0.5rem;">
+        Reservar Nueva Cita
+    </h1>
+    <p style="font-size: 1.1rem; opacity: 0.95;">Selecciona el servicio y el horario de tu preferencia</p>
+</div>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-error">
+        @TempData["Error"]
+    </div>
+}
+
+<div class="card">
+    <form method="post" action="@Url.Action("CrearCita","Usuario")" id="formReserva">
+        <div style="background:lightblue; padding: 1.5rem; border-radius: 10px; margin-bottom: 2rem; border-left: none;">
+            <h3 style="color: #091C47; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                Paso 1: Selecciona el Servicio Médico
+            </h3>
+
+            <div class="form-group" style="margin-bottom: 0;">
+                <label for="servicioID">Tipo de Consulta</label>
+                <select id="servicioID" name="servicioID" required onchange="cargarHorarios()">
+                    <option value="">-- Seleccione un servicio --</option>
+                    @foreach (var servicio in Model)
+                    {
+                        <option value="@servicio.ServicioID">
+                            @servicio.NombreServicio (@servicio.Duracion minutos)
+                        </option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        @foreach (var servicio in Model)
+        {
+            <div id="descripcion-@servicio.ServicioID" style="display:none; background: lightgray; padding: 1.5rem; border-radius: 10px; margin-bottom: 2rem; border-left: none;">
+                <h4 style="color: #091C47; margin-bottom: 0.7rem; display: flex; align-items: center; gap: 0.5rem;">
+                    Información del Servicio
+                </h4>
+                <p style="color: #091C47; margin: 0; line-height: 1.6;">
+                    <strong>Descripción:</strong> @servicio.Descripcion
+                </p>
+                <p style="color: #091C47; margin-top: 0.5rem;">
+                    <strong>Duración:</strong> @servicio.Duracion minutos
+                </p>
+            </div>
+        }
+
+        <div id="grupoHorarios" style="display:none;">
+            <div style="background: lightblue; padding: 1.5rem; border-radius: 10px; margin-bottom: 2rem; border-left: none;">
+                <h3 style="color: #091C47; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                    Paso 2: Selecciona el Horario
+                </h3>
+
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="horarioID">Horarios Disponibles</label>
+                    <select id="horarioID" name="horarioID" required>
+                        <option value="">-- Seleccione un horario --</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <input type="hidden" id="fechaCita" name="fechaCita" />
+
+        <div style="display: flex; gap: 1rem; margin-top: 2rem; flex-wrap: wrap;">
+            <button type="submit" class="btn btn-success" id="btnReservar" style="display:none; flex: 1; min-width: 200px;">
+                Confirmar Reserva
+            </button>
+            <a href="@Url.Action("Index","Usuario")" class="btn" style="background: #091C47; color: white; flex: 1; min-width: 200px; text-align: center; box-shadow: 0 2px 4px rgba(120, 144, 156, 0.3);">
+                Cancelar
+            </a>
+        </div>
+    </form>
+</div>
+
+
+@section scripts {
+    <script>
+    function cargarHorarios() {
+        var servicioID = document.getElementById('servicioID').value;
+        var horarioSelect = document.getElementById('horarioID');
+        var grupoHorarios = document.getElementById('grupoHorarios');
+        var btnReservar = document.getElementById('btnReservar');
+
+        document.querySelectorAll('[id^="descripcion-"]').forEach(d => d.style.display='none');
+
+        horarioSelect.innerHTML = '<option value="">-- Seleccione un horario --</option>';
+        grupoHorarios.style.display = 'none';
+        btnReservar.style.display = 'none';
+
+        if (!servicioID) return;
+
+        var descripcion = document.getElementById('descripcion-' + servicioID);
+        if(descripcion) descripcion.style.display='block';
+
+        fetch('@Url.Action("ObtenerHorarios", "Usuario")', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({ servicioID: parseInt(servicioID) })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success && data.horarios && data.horarios.length > 0){
+                data.horarios.forEach(h => {
+                    var opt = document.createElement('option');
+                    opt.value = h.HorarioID;
+                    opt.textContent = h.FechaHora;
+                    opt.setAttribute('data-fecha', h.FechaHora);
+                    horarioSelect.appendChild(opt);
+                });
+                grupoHorarios.style.display='block';
+            } else {
+                alert('⚠️ No hay horarios disponibles para este servicio');
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert('❌ Error al cargar horarios. Por favor, intenta de nuevo.');
+        });
+    }
+
+    document.getElementById('horarioID').addEventListener('change', function(){
+        var btnReservar = document.getElementById('btnReservar');
+        var fechaCitaInput = document.getElementById('fechaCita');
+        if(this.value){
+            fechaCitaInput.value = this.options[this.selectedIndex].getAttribute('data-fecha');
+            btnReservar.style.display='inline-block';
+        } else {
+            btnReservar.style.display='none';
+        }
+    });
+
+    document.getElementById('formReserva').addEventListener('submit', function(e){
+        if(!confirm('¿Estás seguro de reservar esta cita?')){
+            e.preventDefault();
+        }
+    });
+    </script>
+}
